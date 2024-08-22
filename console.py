@@ -15,8 +15,7 @@ from models.base_model import BaseModel
 class HBNBCommand(cmd.Cmd):
     """Contains the functionality for the HBNB console"""
     prompt = "(hbnb)"
-    valid_classes = ["BaseModel", "User", "State", "City",
-                     "Amenity", "Place", "Review"]
+    classes = {"BaseModel": BaseModel}
 
     def do_quit(self, line):
         """ Method to exit the HBNB console"""
@@ -38,6 +37,27 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self):
         """ Overrides the emptyline method of CMD """
         pass
+
+    def do_create(self, args):
+        """Create an object of any class"""
+        if not args:
+            print("** class name missing **")
+            return
+        
+        args_list = args.split()
+        class_name = args_list[0]
+
+        if class_name not in HBNBCommand.classes:
+            print("** class doesn't exist **")
+        else:
+            obj = eval(class_name)()
+            obj.save()
+            print(obj.id)
+
+    def help_create(self):
+        """ Help information for the create method """
+        print("Creates a class of any type")
+        print("[Usage]: create <className>\n")
 
 
 if __name__ == '__main__':
