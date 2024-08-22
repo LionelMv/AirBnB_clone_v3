@@ -62,6 +62,7 @@ class HBNBCommand(cmd.Cmd):
     def do_show(self, args):
         """Method to show an individual object.
         """
+        # Remove possible trailing args
         args_list = args.split()
         class_name = args_list[0]
         class_id = args_list[1]
@@ -90,6 +91,7 @@ class HBNBCommand(cmd.Cmd):
     def do_destroy(self, args):
         """Deletes a specified object
         """
+        # Remove possible trailing args
         args_list = args.split()
         class_name = args_list[0]
         class_id = args_list[1]
@@ -97,7 +99,7 @@ class HBNBCommand(cmd.Cmd):
         if not class_name:
             print("** class name missing **")
 
-        if class_name not in HBNBCommand.valid_classes:
+        if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
 
         if not class_id:
@@ -115,6 +117,27 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the destroy command """
         print("Destroys an individual instance of a class")
         print("[Usage]: destroy <className> <objectId>\n")
+
+    def do_all(self, args):
+        """Shows all objects, or all objects of a class"""
+        if args:
+            # Remove possible trailing args
+            args = args.split()[0]
+            if args not in HBNBCommand.classes:
+                print("** class doesn't exist **")
+                return
+
+            new_list = [str(v) for k, v in storage.all().items()
+                        if k.split(".")[0] == args]
+        else:
+            new_list = [str(obj) for obj in storage.all().values()]
+
+        print(new_list)
+
+def help_all(self):
+        """ Help information for the all command """
+        print("Shows all objects, or all of a class")
+        print("[Usage]: all <className>\n")
 
 
 if __name__ == '__main__':
