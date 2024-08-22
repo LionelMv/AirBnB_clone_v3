@@ -2,6 +2,7 @@
 """"Console Module"""
 
 import cmd
+import ast
 from models import storage
 from models.base_model import BaseModel
 # from models.user import User
@@ -50,7 +51,8 @@ class HBNBCommand(cmd.Cmd):
         if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
         else:
-            obj = eval(class_name)()
+            # obj = eval(class_name)()
+            obj = HBNBCommand.classes[class_name]()  # safer than eval
             obj.save()
             print(obj.id)
 
@@ -62,20 +64,22 @@ class HBNBCommand(cmd.Cmd):
     def do_show(self, args):
         """Method to show an individual object.
         """
-        # Remove possible trailing args
+        if not args:
+            print("** class name missing **")
+            return
+
         args_list = args.split()
         class_name = args_list[0]
-        class_id = args_list[1]
-
-        if not class_name:
-            print("** class name missing **")
 
         if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
+            return
 
-        if not class_id:
+        if len(args_list) < 2:
             print("** instance id missing **")
+            return
 
+        class_id = args_list[1]
         key = f"{class_name}.{class_id}"
 
         if key not in storage.all():
@@ -91,20 +95,22 @@ class HBNBCommand(cmd.Cmd):
     def do_destroy(self, args):
         """Deletes a specified object
         """
-        # Remove possible trailing args
+        if not args:
+            print("** class name missing **")
+            return
+
         args_list = args.split()
         class_name = args_list[0]
-        class_id = args_list[1]
-
-        if not class_name:
-            print("** class name missing **")
 
         if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
+            return
 
-        if not class_id:
+        if len(args_list) < 2:
             print("** instance id missing **")
+            return
 
+        class_id = args_list[1]
         key = f"{class_name}.{class_id}"
 
         if key not in storage.all():
@@ -120,7 +126,9 @@ class HBNBCommand(cmd.Cmd):
 
     def do_all(self, args):
         """Shows all objects, or all objects of a class"""
-        if args:
+        if not args:
+            new_list = [str(obj) for obj in storage.all().values()]
+        else:
             # Remove possible trailing args
             args = args.split()[0]
             if args not in HBNBCommand.classes:
@@ -129,15 +137,64 @@ class HBNBCommand(cmd.Cmd):
 
             new_list = [str(v) for k, v in storage.all().items()
                         if k.split(".")[0] == args]
-        else:
-            new_list = [str(obj) for obj in storage.all().values()]
 
         print(new_list)
 
-def help_all(self):
+    def help_all(self):
         """ Help information for the all command """
         print("Shows all objects, or all of a class")
         print("[Usage]: all <className>\n")
+
+    def do_update(self, args):
+        """Updates a certain object with new information"""
+        if not args:
+            print("** class name missing **")
+            return
+        args_list = args.split()
+        class_name = args_list[0]
+
+        if class_name not in HBNBCommand.classes:
+            print("** class doesn't exist **")
+            return
+
+        if len(args_list) < 2:
+            print("** instance id missing **")
+            return
+
+        if len(args_list) < 3:
+            print("** attribute name missing **")
+            return
+
+        if len(args_list) < 4:
+            print("** value missing **")
+            return
+
+        class_id = args_list[1]
+        key = f"{class_name}.{class_id}"
+
+        if key not in storage.all().keys():
+            print("** no instance found **")
+        else:
+            attribute_name = args_list[2]
+            attribute_value = args_list[3]
+
+            # Finding attribute type (casted).
+            try:
+                arg_type = type(ast.literal_eval(attribute_value))
+            except (ValueError, SyntaxError):
+                arg_type = str  # Fallback to string if eval fails
+
+            attribute_value = attribute_value.strip('"').strip("'")
+            setattr(storage.all()[key],
+                    attribute_name,
+                    arg_type(attribute_value)
+                    )
+            storage.all()[key].save()
+
+    def help_update(self):
+        """ Help information for the update class """
+        print("Updates an object with new information")
+        print("Usage: update <className> <id> <attName> <attVal>\n")
 
 
 if __name__ == '__main__':
