@@ -59,6 +59,34 @@ class HBNBCommand(cmd.Cmd):
         print("Creates a class of any type")
         print("[Usage]: create <className>\n")
 
+    def do_show(self, args):
+        """Method to show an individual object.
+        """
+        args_list = args.split()
+        class_name = args_list[0]
+        class_id = args_list[1]
+
+        if not class_name:
+            print("** class name missing **")
+
+        if class_name not in HBNBCommand.classes:
+            print("** class doesn't exist **")
+
+        if not class_id:
+            print("** instance id missing **")
+
+        key = f"{class_name}.{class_id}"
+
+        if key not in storage.all():
+            print("** no instance found **")
+        else:
+            print(storage.all()[key])
+
+    def help_show(self):
+        """ Help information for the show command """
+        print("Shows an individual instance of a class")
+        print("[Usage]: show <className> <objectId>\n")
+
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
