@@ -43,7 +43,7 @@ class HBNBCommand(cmd.Cmd):
         if not args:
             print("** class name missing **")
             return
-        
+
         args_list = args.split()
         class_name = args_list[0]
 
@@ -86,6 +86,35 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the show command """
         print("Shows an individual instance of a class")
         print("[Usage]: show <className> <objectId>\n")
+
+    def do_destroy(self, args):
+        """Deletes a specified object
+        """
+        args_list = args.split()
+        class_name = args_list[0]
+        class_id = args_list[1]
+
+        if not class_name:
+            print("** class name missing **")
+
+        if class_name not in HBNBCommand.valid_classes:
+            print("** class doesn't exist **")
+
+        if not class_id:
+            print("** instance id missing **")
+
+        key = f"{class_name}.{class_id}"
+
+        if key not in storage.all():
+            print("** no instance found **")
+        else:
+            del storage.all()[key]
+            storage.save()
+
+    def help_destroy(self):
+        """ Help information for the destroy command """
+        print("Destroys an individual instance of a class")
+        print("[Usage]: destroy <className> <objectId>\n")
 
 
 if __name__ == '__main__':
