@@ -27,7 +27,7 @@ class FileStorage:
     def reload(self):
         """Deserializes to __objects the JSON file (__file_path)"""
         from models.base_model import BaseModel
-        # from models.user import User
+        from models.user import User
         # from models.place import Place
         # from models.state import State
         # from models.city import City
@@ -40,13 +40,13 @@ class FileStorage:
                     'Review': Review
                   }"""
         classes = {
-            'BaseModel': BaseModel
+            'BaseModel': BaseModel, 'User': User,
         }
 
         try:
             with open(FileStorage.__file_path, "r", encoding="utf-8") as f:
                 dict = json.load(f)
-            
+
             for key, val in dict.items():
                 # class_name = key.split(".")[0]
                 # obj = eval(class_name)(**val)
