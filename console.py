@@ -5,7 +5,7 @@ import cmd
 import ast
 from models import storage
 from models.base_model import BaseModel
-# from models.user import User
+from models.user import User
 # from models.state import State
 # from models.city import City
 # from models.amenity import Amenity
@@ -16,7 +16,7 @@ from models.base_model import BaseModel
 class HBNBCommand(cmd.Cmd):
     """Contains the functionality for the HBNB console"""
     prompt = "(hbnb)"
-    classes = {"BaseModel": BaseModel}
+    classes = {"BaseModel": BaseModel, "User": User}
 
     def do_quit(self, line):
         """ Method to exit the HBNB console"""
