@@ -77,5 +77,17 @@ Usage: update <class_name> <_id>
 (hbnb)
 ```
 
+<center> <h3>Issues</h3> </center>
+- Making the page responsive
+
+<center> <h3>Contributing</h3> </center>
+
+Want to make HBNB better?:
+- Clone the project.
+- Create a new branch to work on ```git checkout -b <feature_branch>```
+- You can name the branch with the prefix ```feature_```
+- Add your changes and push them to the branch: ```git push```
+- Open a pull request
+
 #### Authors
 Lionel Mwangi - [LinkedIn](https://www.linkedin.com/in/lionelmwangi/)
